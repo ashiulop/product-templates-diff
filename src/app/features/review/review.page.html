@@ -1,0 +1,119 @@
+<a routerLink="/" class="back">Back to dashboard</a>
+
+@if (outcome(); as banner) {
+  <div class="banner" [class.error]="banner.role === 'alert'" [attr.role]="banner.role">
+    <p>{{ banner.text }}</p>
+    @if (banner.offerReload) {
+      <button type="button" (click)="reloadAndClear()">Reload</button>
+    }
+  </div>
+}
+
+@if (status.error()) {
+  <div class="banner error" role="alert">
+    <p>Unexpected response from the server</p>
+    <button type="button" (click)="status.reload()">Retry</button>
+  </div>
+} @else if (identity(); as engagement) {
+  <header class="page-header">
+    <h2>{{ engagement.engagementName }}</h2>
+    <p class="template">
+      {{ engagement.templateName }}
+      @if (engagement.state !== 'not-yet-checked') {
+        <span>on v{{ engagement.currentVersion }}, latest v{{ engagement.latestVersion }}</span>
+      }
+    </p>
+  </header>
+
+  @if (engagement.state === 'not-yet-checked') {
+    <p>
+      The template version for this engagement hasn't been read yet, so there is nothing to review.
+    </p>
+  } @else if (changes.error()) {
+    <div class="banner error" role="alert">
+      <p>Unexpected response from the server</p>
+      <button type="button" (click)="changes.reload()">Retry</button>
+    </div>
+  } @else if (vm(); as model) {
+    @if (model.versions.length === 0) {
+      <p>No pending updates</p>
+    } @else {
+      <ul class="versions">
+        @for (entry of model.versions; track entry.version) {
+          <li class="card">
+            <div class="card-head">
+              <h3>v{{ entry.version }}</h3>
+              @if (entry.isNewSinceLastReview) {
+                <span class="badge">New since your last review</span>
+              }
+            </div>
+            @if (entry.summary.status === 'ready') {
+              <p class="source">{{ sourceLabel(entry.summary) }}</p>
+              <ul class="items">
+                @for (item of entry.summary.items; track item.id) {
+                  <li class="item">
+                    <span class="chip">{{ item.category }}</span>
+                    <strong>{{ item.title }}</strong>
+                    <p>{{ item.explanation }}</p>
+                    @let refs = entriesFor(entry.summary.diff, item);
+                    <details>
+                      <summary>Show changes ({{ refs.length }})</summary>
+                      <ul class="diff">
+                        @for (ref of refs; track ref.id) {
+                          <li>
+                            <code>{{ ref.op }}</code>
+                            <code>{{ ref.path }}</code>
+                            <code
+                              >{{ formatValue(ref.before) }} → {{ formatValue(ref.after) }}</code
+                            >
+                          </li>
+                        }
+                      </ul>
+                    </details>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="preparing">Summary being prepared…</p>
+            }
+          </li>
+        }
+      </ul>
+
+      <section class="decision-bar">
+        <div class="actions">
+          <button
+            type="button"
+            [disabled]="busy() || !model.apply.allowed"
+            (click)="decide('apply')"
+          >
+            Apply{{ rangeLabel() }}
+          </button>
+          @if (!busy() && !model.apply.allowed) {
+            <span class="reason">{{ model.apply.reason }}</span>
+          }
+          <button
+            type="button"
+            [disabled]="busy() || !model.decline.allowed"
+            (click)="decide('decline')"
+          >
+            Decline{{ rangeLabel() }}
+          </button>
+          @if (!busy() && !model.decline.allowed) {
+            <span class="reason">{{ model.decline.reason }}</span>
+          }
+        </div>
+        @if (model.decideThrough !== null && model.waitingFor !== null) {
+          <p class="note">
+            Decisions stop at v{{ model.decideThrough }}: the summary of v{{ model.waitingFor }} is
+            still being prepared.
+          </p>
+        }
+      </section>
+    }
+  } @else if (tracked()) {
+    <p role="status">Loading changes…</p>
+  }
+} @else {
+  <p role="status">Loading engagement…</p>
+}
