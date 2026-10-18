@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const DiffEntrySchema = z.object({
   id: z.string().min(1),

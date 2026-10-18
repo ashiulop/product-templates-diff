@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const ApiErrorSchema = z.object({
   code: z.enum([

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import * as z from 'zod';
 
 export const DemoPublishRequestSchema = z.object({ templateId: z.string() });
 export type DemoPublishRequest = z.infer<typeof DemoPublishRequestSchema>;
