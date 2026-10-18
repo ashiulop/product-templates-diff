@@ -1,0 +1,25 @@
+@if (engagements.error()) {
+  <div class="banner" role="alert">
+    <p>Unexpected response from the server</p>
+    <button type="button" (click)="engagements.reload()">Retry</button>
+  </div>
+} @else if (engagements.isLoading() && !engagements.hasValue()) {
+  <p role="status">Loading engagements…</p>
+} @else if (engagements.hasValue()) {
+  <div class="toolbar">
+    <p class="summary">{{ summary() }}</p>
+    <button type="button" (click)="engagements.reload()">Refresh</button>
+  </div>
+  <ul class="rows">
+    @for (row of rows(); track row.engagementId) {
+      <li class="row">
+        <span class="name">{{ row.engagementName }}</span>
+        <span class="template">{{ row.templateName }}</span>
+        <span class="state">{{ stateLabel(row) }}</span>
+        @if (row.state !== 'not-yet-checked') {
+          <a [routerLink]="['/engagements', row.engagementId]">Review</a>
+        }
+      </li>
+    }
+  </ul>
+}
