@@ -83,7 +83,7 @@ Removing `fakeBackendInterceptor` from `withInterceptors(...)` and deleting `pro
 
 ## 6. Testing
 
-Vitest through `@angular/build:unit-test`. The last single run passed 205 tests in 10 spec files, with none skipped.
+Vitest through `@angular/build:unit-test`. The last single run passed 206 tests in 10 spec files, with none skipped.
 
 | Spec | Covers |
 |---|---|
@@ -102,10 +102,10 @@ No browser end-to-end tests.
 ## 7. How this was built
 
 - The design and spec were worked out in conversation with Claude.
-- `CLAUDE.md` in this repo is the brief.
+- A `CLAUDE.md` brief, kept out of the repository, drove the build.
 - Claude Code executed it with subagent-driven development: an implementer subagent and a reviewer subagent per task.
 - Every task was reviewed and committed by hand.
-- Git write commands are denied in `.claude/settings.json`.
+- Git write commands were denied to Claude Code in its project settings.
 
 ## 8. Out of scope and next steps
 

@@ -1,5 +1,5 @@
 import { DestroyRef, Injectable, inject } from '@angular/core';
-import type { DemoPublishResponse, EngagementStatus, Identity, UpdateDecision, VersionSummary } from '../contracts';
+import type { ApiError, DemoPublishResponse, EngagementStatus, Identity, UpdateDecision, VersionSummary } from '../contracts';
 import {
   type CatalogView,
   type Result,
@@ -13,7 +13,7 @@ import { type SeedTemplate, createPublishedSummary, createSeed } from './seed';
 
 function fail(
   status: number,
-  code: 'NOT_FOUND' | 'SUMMARY_NOT_READY',
+  code: Extract<ApiError['code'], 'NOT_FOUND' | 'SUMMARY_NOT_READY'>,
   message: string,
 ): Result<never> {
   return { ok: false, status, code, message };

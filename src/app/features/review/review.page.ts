@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import type { ChangeItem, DiffEntry, VersionSummary } from '../../contracts';
+import type { ChangeItem, DiffEntry, UpdateDecision, VersionSummary } from '../../contracts';
 import { DecisionResult, EngagementApi } from '../../data/engagement-api';
 import { toReviewViewModel, TrackedEngagementStatus } from './review-view-model';
 
@@ -13,7 +13,7 @@ export interface DecisionOutcome {
 
 export function decisionOutcome(
   result: DecisionResult,
-  decision: 'apply' | 'decline',
+  decision: UpdateDecision['decision'],
   throughVersion: number,
 ): DecisionOutcome {
   switch (result.kind) {
@@ -144,7 +144,7 @@ export class ReviewPage {
     this.reloadAll();
   }
 
-  protected async decide(decision: 'apply' | 'decline'): Promise<void> {
+  protected async decide(decision: UpdateDecision['decision']): Promise<void> {
     const vm = this.vm();
     const tracked = this.tracked();
     if (this.submitting() || !vm || !tracked || vm.decideThrough === null) {

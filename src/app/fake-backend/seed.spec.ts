@@ -1,26 +1,38 @@
 import { TestBed } from '@angular/core/testing';
-import { describe, expect, it } from 'vitest';
-import { EngagementStatusSchema, VersionSummarySchema } from '../contracts';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { type EngagementStatus, EngagementStatusSchema, VersionSummarySchema } from '../contracts';
 import { provideFakeBackend } from './provide-fake-backend';
-import { createSeed } from './seed';
+import { createPublishedSummary, createSeed } from './seed';
 import { FakeBackendStore } from './store';
 
 describe('seed contract', () => {
   const seed = createSeed();
 
-  TestBed.configureTestingModule({ providers: [provideFakeBackend({ latencyMs: 0 })] });
-  const listed = TestBed.inject(FakeBackendStore).listEngagements();
-  const statuses = (listed.ok ? listed.value : []).map((s) => [s.engagementId, s] as const);
+  const served = (): EngagementStatus[] => {
+    const listed = TestBed.inject(FakeBackendStore).listEngagements();
+    return listed.ok ? listed.value : [];
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [provideFakeBackend({ latencyMs: 0 })] });
+  });
 
   it('the store serves every seed engagement', () => {
-    expect(statuses.map(([id]) => id)).toEqual(seed.engagements.map((e) => e.engagementId));
+    expect(served().map((s) => s.engagementId)).toEqual(seed.engagements.map((e) => e.engagementId));
   });
 
-  it.each(statuses)('status served for %s passes EngagementStatusSchema', (_id, status) => {
-    expect(EngagementStatusSchema.safeParse(status).success).toBe(true);
-  });
+  it.each(seed.engagements.map((e) => e.engagementId))(
+    'status served for %s passes EngagementStatusSchema',
+    (id) => {
+      const status = served().find((s) => s.engagementId === id);
+      expect(EngagementStatusSchema.safeParse(status).success).toBe(true);
+    },
+  );
 
-  const summaries = [...seed.templates.values()].flatMap((t) => [...t.summaries.values()]);
+  const summaries = [
+    ...[...seed.templates.values()].flatMap((t) => [...t.summaries.values()]),
+    createPublishedSummary('T-AUDIT', 7),
+  ];
 
   it.each(summaries.map((s) => [`${s.templateId} v${s.version}`, s] as const))(
     'summary %s passes VersionSummarySchema',

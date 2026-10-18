@@ -63,7 +63,7 @@ export class DemoPanel {
       const name =
         this.templates().find((t) => t.id === parsed.data.templateId)?.name ??
         parsed.data.templateId;
-      return `Published ${name} v${parsed.data.version} (summary being prepared). Other views do not refresh by themselves; reload the view to see it.`;
+      return `Published ${name} v${parsed.data.version} (summary being prepared). Other views do not refresh by themselves; use Refresh on the dashboard, or go back and reopen the engagement.`;
     }, 'Publish failed');
   }
 
@@ -89,7 +89,7 @@ export class DemoPanel {
   protected async reset(): Promise<void> {
     await this.run(async () => {
       await firstValueFrom(this.http.post<unknown>('/api/_demo/reset', null));
-      return 'Demo data reset. Other views do not refresh by themselves; reload the view to see it.';
+      return 'Demo data reset. Other views do not refresh by themselves; use Refresh on the dashboard, or go back and reopen the engagement.';
     }, 'Reset failed');
   }
 

@@ -50,7 +50,7 @@ export function createPublishedSummary(templateId: string, version: number): Ver
         id: `i${version}-2`,
         title: 'Subsequent events inquiry added',
         explanation:
-          'A new procedure requires written inquiries to management about events after the reporting date.',
+          'A new procedure requires written representations to management about events after the reporting date.',
         category: 'added',
         diffRefs: [d2],
       },
@@ -330,22 +330,28 @@ export function createSeed(): SeedData {
     ),
   ]);
 
-  const engagementTuples: [string, string, string, string][] = [
-    ['E-001', 'Acme Manufacturing FY2026', 'T-AUDIT', 'Statutory Audit (EU)'],
-    ['E-002', 'Brightline Retail FY2026', 'T-AUDIT', 'Statutory Audit (EU)'],
-    ['E-003', 'Coastal Logistics FY2026', 'T-AUDIT', 'Statutory Audit (EU)'],
-    ['E-004', 'Delta Health FY2026', 'T-AUDIT', 'Statutory Audit (EU)'],
-    ['E-005', 'Evergreen Foods FY2026', 'T-ICR', 'Internal Controls Review'],
-    ['E-006', 'Fjord Shipping FY2026', 'T-ICR', 'Internal Controls Review'],
-    ['E-007', 'Granite Construction FY2026', 'T-TAX', 'Tax Compliance Pack'],
-    ['E-008', 'Harbor Insurance FY2026', 'T-TAX', 'Tax Compliance Pack'],
+  const templates = new Map<string, SeedTemplate>([
+    ['T-AUDIT', { name: 'Statutory Audit (EU)', latestVersion: 6, summaries: audit }],
+    ['T-ICR', { name: 'Internal Controls Review', latestVersion: 3, summaries: icr }],
+    ['T-TAX', { name: 'Tax Compliance Pack', latestVersion: 2, summaries: tax }],
+  ]);
+
+  const engagementTuples: [string, string, string][] = [
+    ['E-001', 'Acme Manufacturing FY2026', 'T-AUDIT'],
+    ['E-002', 'Brightline Retail FY2026', 'T-AUDIT'],
+    ['E-003', 'Coastal Logistics FY2026', 'T-AUDIT'],
+    ['E-004', 'Delta Health FY2026', 'T-AUDIT'],
+    ['E-005', 'Evergreen Foods FY2026', 'T-ICR'],
+    ['E-006', 'Fjord Shipping FY2026', 'T-ICR'],
+    ['E-007', 'Granite Construction FY2026', 'T-TAX'],
+    ['E-008', 'Harbor Insurance FY2026', 'T-TAX'],
   ];
   const engagements: Identity[] = engagementTuples.map(
-    ([engagementId, engagementName, templateId, templateName]) => ({
+    ([engagementId, engagementName, templateId]) => ({
       engagementId,
       engagementName,
       templateId,
-      templateName,
+      templateName: templates.get(templateId)?.name ?? templateId,
     }),
   );
 
@@ -369,11 +375,7 @@ export function createSeed(): SeedData {
   );
 
   return {
-    templates: new Map<string, SeedTemplate>([
-      ['T-AUDIT', { name: 'Statutory Audit (EU)', latestVersion: 6, summaries: audit }],
-      ['T-ICR', { name: 'Internal Controls Review', latestVersion: 3, summaries: icr }],
-      ['T-TAX', { name: 'Tax Compliance Pack', latestVersion: 2, summaries: tax }],
-    ]),
+    templates,
     engagements,
     rows,
   };
