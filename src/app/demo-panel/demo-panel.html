@@ -1,9 +1,39 @@
 <details class="panel">
-  <summary>Demo controls (simulates other actors)</summary>
+  <summary>
+    <svg
+      viewBox="0 0 16 16"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <path d="M2.5 5h5.25M12.25 5h1.25M2.5 11h1.25M8.25 11h5.25" />
+      <circle cx="10" cy="5" r="2" />
+      <circle cx="6" cy="11" r="2" />
+    </svg>
+    Demo controls (simulates other actors)
+    <svg
+      class="chevron"
+      viewBox="0 0 16 16"
+      width="16"
+      height="16"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M4.5 6.25 8 9.75l3.5-3.5" />
+    </svg>
+  </summary>
   <div class="body">
     @if (options.error()) {
-      <p role="alert">Unexpected response from the server</p>
-      <button type="button" (click)="options.reload()">Retry</button>
+      <p class="flash" role="alert">Unexpected response from the server</p>
+      <button type="button" class="btn btn-sm" (click)="options.reload()">Retry</button>
     } @else if (options.hasValue()) {
       <div class="group">
         <label for="demo-template">Template</label>
@@ -12,7 +42,7 @@
             <option [value]="t.id">{{ t.name }}</option>
           }
         </select>
-        <button type="button" [disabled]="busy()" (click)="publish(tpl.value)">
+        <button type="button" class="btn btn-sm" [disabled]="busy()" (click)="publish(tpl.value)">
           Publish new version
         </button>
       </div>
@@ -24,11 +54,17 @@
           }
         </select>
         <div class="actions">
-          <button type="button" [disabled]="busy()" (click)="colleagueDecides(eng.value, 'apply')">
+          <button
+            type="button"
+            class="btn btn-sm"
+            [disabled]="busy()"
+            (click)="colleagueDecides(eng.value, 'apply')"
+          >
             Colleague applies
           </button>
           <button
             type="button"
+            class="btn btn-sm"
             [disabled]="busy()"
             (click)="colleagueDecides(eng.value, 'decline')"
           >
@@ -37,9 +73,13 @@
         </div>
       </div>
     } @else {
-      <p role="status">Loading demo options…</p>
+      <p class="outcome" role="status">Loading demo options…</p>
     }
-    <button type="button" [disabled]="busy()" (click)="reset()">Reset demo data</button>
-    <p class="outcome" role="status">{{ outcome() }}</p>
+    <div class="footer">
+      <button type="button" class="btn btn-sm" [disabled]="busy()" (click)="reset()">
+        Reset demo data
+      </button>
+      <p class="outcome" role="status">{{ outcome() }}</p>
+    </div>
   </div>
 </details>

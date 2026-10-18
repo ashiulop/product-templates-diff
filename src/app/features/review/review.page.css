@@ -1,37 +1,58 @@
 .back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
   margin-bottom: var(--space-3);
-  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
 }
 
-.page-header h2 {
-  margin: 0;
-}
-
-.template {
-  margin: var(--space-1) 0 var(--space-3);
+.loading {
   color: var(--color-muted);
 }
 
-.banner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+/* Page header: title, then the state badge and the template line */
+
+.page-header {
   margin-bottom: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.banner.error {
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
+.page-header h2 {
+  margin: 0 0 var(--space-2);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
-.banner p {
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) 12px;
+}
+
+/* The template name is bold; the version range after it is not. */
+.template {
   margin: 0;
+  color: var(--color-muted);
+  font-weight: 600;
 }
+
+.template span {
+  font-weight: 400;
+}
+
+.blank {
+  margin: 0;
+  padding: 32px var(--space-3);
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/* Version cards */
 
 .versions,
 .items,
@@ -41,70 +62,216 @@
   list-style: none;
 }
 
-.card {
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-}
-
 .card + .card {
   margin-top: var(--space-3);
 }
 
 .card-head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  justify-content: flex-start;
 }
 
 .card-head h3 {
   margin: 0;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.badge,
-.chip {
-  padding: 0 var(--space-2);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-size: 0.8rem;
+.new {
+  --tone: var(--color-accent);
+  --tone-border: var(--color-accent-border);
 }
 
-.badge {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-.source,
-.preparing,
-.reason,
-.note {
+.source {
+  margin-left: auto;
   color: var(--color-muted);
+  font-size: 12px;
 }
 
 .item {
-  padding: var(--space-2) 0;
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border-muted);
 }
 
-.item p {
-  margin: var(--space-1) 0;
+.item:first-child {
+  border-top: 0;
 }
 
-.diff li {
+.item-head {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: var(--space-2);
-  padding: var(--space-1) 0;
 }
 
+.explanation {
+  margin: var(--space-1) 0 var(--space-2);
+  color: var(--color-muted);
+}
+
+summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  content: '';
+  border-block: 4px solid transparent;
+  border-left: 5px solid currentColor;
+  transition: transform 0.15s;
+}
+
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+summary:hover {
+  text-decoration: underline;
+}
+
+/* Diff blocks */
+
+.diff {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+.diff-entry {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.diff-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-subtle);
+}
+
+.path,
+.line code {
+  overflow-wrap: anywhere;
+}
+
+.line {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.line code {
+  padding: 0 var(--space-2);
+  white-space: pre-wrap;
+}
+
+.marker {
+  text-align: center;
+  user-select: none;
+}
+
+.del {
+  background: var(--color-diff-del);
+}
+
+.del .marker {
+  background: var(--color-diff-del-gutter);
+  color: var(--color-danger);
+}
+
+.add {
+  background: var(--color-diff-add);
+}
+
+.add .marker {
+  background: var(--color-diff-add-gutter);
+  color: var(--color-success);
+}
+
+.preparing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: var(--space-3);
+  color: var(--color-muted);
+}
+
+/* Decision bar: merge-style box */
+
 .decision-bar {
-  margin-top: var(--space-3);
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.merge-icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+.merge-body {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-3);
+}
+
+/* Small caret pointing at the icon */
+.merge-body::before {
+  content: '';
+  position: absolute;
+  top: 13px;
+  left: -7px;
+  width: 12px;
+  height: 12px;
+  border-bottom: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  background: var(--color-page);
+  transform: rotate(45deg);
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-3);
+  gap: var(--space-2) 12px;
+}
+
+.reason,
+.note {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.note {
+  margin: 12px 0 0;
+}
+
+@media (max-width: 640px) {
+  .merge-icon,
+  .merge-body::before {
+    display: none;
+  }
 }

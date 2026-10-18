@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { RouterLink } from '@angular/router';
 import type { ChangeItem, DiffEntry, UpdateDecision, VersionSummary } from '../../contracts';
 import { DecisionResult, EngagementApi } from '../../data/engagement-api';
+import { stateLabel } from '../dashboard/dashboard-logic';
 import { toReviewViewModel, TrackedEngagementStatus } from './review-view-model';
 
 export interface DecisionOutcome {
@@ -65,7 +66,7 @@ export function rangeLabel(currentVersion: number, decideThrough: number | null)
 }
 
 function formatValue(value: unknown): string {
-  return value === undefined ? '—' : JSON.stringify(value);
+  return JSON.stringify(value);
 }
 
 function entriesFor(diff: DiffEntry[], item: ChangeItem): DiffEntry[] {
@@ -122,6 +123,7 @@ export class ReviewPage {
     return tracked ? rangeLabel(tracked.currentVersion, this.vm()?.decideThrough ?? null) : '';
   });
 
+  protected readonly stateLabel = stateLabel;
   protected readonly formatValue = formatValue;
   protected readonly entriesFor = entriesFor;
 

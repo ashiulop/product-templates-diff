@@ -1,31 +1,22 @@
-.toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  margin-bottom: var(--space-3);
+.loading {
+  color: var(--color-muted);
 }
 
+/* Basis 0 keeps Refresh beside the summary on narrow screens; the text wraps instead. */
 .summary {
+  flex: 1 1 0;
   margin: 0;
   font-weight: 600;
 }
 
-.banner {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius);
-  background: var(--color-error-bg);
-  color: var(--color-error-text);
-}
-
-.banner p {
-  margin: 0;
-}
-
+/*
+ * Rows share one column grid (subgrid), so labels and Review buttons line up.
+ * Edge tracks are auto: a subgrid's padding is added to its edge items, not to the tracks.
+ */
 .rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  column-gap: 12px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -33,28 +24,68 @@
 
 .row {
   display: grid;
-  grid-template-columns: 2fr 2fr 2fr auto;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
+  row-gap: var(--space-1);
+  padding: 12px var(--space-3);
+  border-top: 1px solid var(--color-border-muted);
 }
 
-.row + .row {
-  margin-top: var(--space-2);
+.row:first-child {
+  border-top: 0;
+}
+
+.row:last-child {
+  border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
+}
+
+.row:hover {
+  background: var(--color-subtle);
+}
+
+.icon {
+  align-self: start;
+  margin-top: 2px;
+  color: var(--tone);
+}
+
+.title {
+  display: grid;
+  min-width: 0;
 }
 
 .name {
   font-weight: 600;
 }
 
-.template,
-.state {
+.template {
   color: var(--color-muted);
+  font-size: 12px;
 }
 
-a {
-  color: var(--color-accent);
+.row > .label {
+  grid-column: 3;
+  justify-self: end;
+}
+
+.row > .btn {
+  grid-column: 4;
+}
+
+@media (max-width: 640px) {
+  .rows {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .row > .label {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .row > .btn {
+    grid-row: 1 / span 2;
+    grid-column: 3;
+  }
 }

@@ -1,25 +1,74 @@
 @if (engagements.error()) {
-  <div class="banner" role="alert">
+  <div class="flash" role="alert">
     <p>Unexpected response from the server</p>
-    <button type="button" (click)="engagements.reload()">Retry</button>
+    <button type="button" class="btn btn-sm" (click)="engagements.reload()">Retry</button>
   </div>
 } @else if (engagements.isLoading() && !engagements.hasValue()) {
-  <p role="status">Loading engagements…</p>
+  <p class="loading" role="status">Loading engagements…</p>
 } @else if (engagements.hasValue()) {
-  <div class="toolbar">
-    <p class="summary">{{ summary() }}</p>
-    <button type="button" (click)="engagements.reload()">Refresh</button>
-  </div>
-  <ul class="rows">
-    @for (row of rows(); track row.engagementId) {
-      <li class="row">
-        <span class="name">{{ row.engagementName }}</span>
-        <span class="template">{{ row.templateName }}</span>
-        <span class="state">{{ stateLabel(row) }}</span>
-        @if (row.state !== 'not-yet-checked') {
-          <a [routerLink]="['/engagements', row.engagementId]">Review</a>
-        }
-      </li>
-    }
-  </ul>
+  <section class="box">
+    <div class="box-header">
+      <p class="summary">{{ summary() }}</p>
+      <button type="button" class="btn btn-sm" (click)="engagements.reload()">
+        <svg
+          viewBox="0 0 16 16"
+          width="14"
+          height="14"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M13.25 8a5.25 5.25 0 1 1-1.54-3.71M13.25 2.5v2.75H10.5" />
+        </svg>
+        Refresh
+      </button>
+    </div>
+    <ul class="rows">
+      @for (row of rows(); track row.engagementId) {
+        <li class="row" [attr.data-state]="row.state">
+          <svg
+            class="icon"
+            viewBox="0 0 16 16"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            @switch (row.state) {
+              @case ('update-pending') {
+                <circle cx="8" cy="8" r="6.25" />
+                <circle cx="8" cy="8" r="1.5" fill="currentColor" stroke="none" />
+              }
+              @case ('up-to-date') {
+                <circle cx="8" cy="8" r="6.25" />
+                <path d="M5.25 8.25 7 10l3.75-4" />
+              }
+              @case ('declined') {
+                <circle cx="8" cy="8" r="6.25" />
+                <path d="M4.75 11.25l6.5-6.5" />
+              }
+              @case ('not-yet-checked') {
+                <circle cx="8" cy="8" r="6.25" stroke-dasharray="2.45 2.46" />
+              }
+            }
+          </svg>
+          <div class="title">
+            <span class="name">{{ row.engagementName }}</span>
+            <span class="template">{{ row.templateName }}</span>
+          </div>
+          <span class="label">{{ stateLabel(row) }}</span>
+          @if (row.state !== 'not-yet-checked') {
+            <a class="btn btn-sm" [routerLink]="['/engagements', row.engagementId]">Review</a>
+          }
+        </li>
+      }
+    </ul>
+  </section>
 }
