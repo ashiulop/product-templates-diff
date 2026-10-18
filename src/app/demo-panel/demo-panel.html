@@ -1,0 +1,45 @@
+<details class="panel">
+  <summary>Demo controls (simulates other actors)</summary>
+  <div class="body">
+    @if (options.error()) {
+      <p role="alert">Unexpected response from the server</p>
+      <button type="button" (click)="options.reload()">Retry</button>
+    } @else if (options.hasValue()) {
+      <div class="group">
+        <label for="demo-template">Template</label>
+        <select id="demo-template" #tpl>
+          @for (t of templates(); track t.id) {
+            <option [value]="t.id">{{ t.name }}</option>
+          }
+        </select>
+        <button type="button" [disabled]="busy()" (click)="publish(tpl.value)">
+          Publish new version
+        </button>
+      </div>
+      <div class="group">
+        <label for="demo-engagement">Engagement</label>
+        <select id="demo-engagement" #eng>
+          @for (e of engagements(); track e.engagementId) {
+            <option [value]="e.engagementId">{{ e.engagementName }}</option>
+          }
+        </select>
+        <div class="actions">
+          <button type="button" [disabled]="busy()" (click)="colleagueDecides(eng.value, 'apply')">
+            Colleague applies
+          </button>
+          <button
+            type="button"
+            [disabled]="busy()"
+            (click)="colleagueDecides(eng.value, 'decline')"
+          >
+            Colleague declines
+          </button>
+        </div>
+      </div>
+    } @else {
+      <p role="status">Loading demo options…</p>
+    }
+    <button type="button" [disabled]="busy()" (click)="reset()">Reset demo data</button>
+    <p class="outcome" role="status">{{ outcome() }}</p>
+  </div>
+</details>
